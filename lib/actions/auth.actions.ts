@@ -1,7 +1,8 @@
 'use server';
 
 import {db, auth} from "@/firebase/admin";
-import { SignInParams, User } from "@/types";
+import { SignInParams, User, Interview, GetLatestInterviewsParams } from "@/types";
+import { Query } from "firebase-admin/firestore";
 import { CollectionReference, DocumentData } from "firebase/firestore";
 import { cookies } from "next/headers";
 
@@ -133,3 +134,4 @@ export async function signOut() {
     const cookieStore = await cookies();
     cookieStore.delete('session');
 }
+
