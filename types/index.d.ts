@@ -1,4 +1,4 @@
-export interface Feedback {
+interface Feedback {
   id: string;
   interviewId: string;
   totalScore: number;
@@ -38,7 +38,7 @@ interface User {
   id: string;
 }
 
-export interface InterviewCardProps {
+interface InterviewCardProps {
   interviewId?: string;
   userId?: string;
   role: string;
@@ -47,12 +47,14 @@ export interface InterviewCardProps {
   createdAt?: string;
 }
 
-interface AgentProps {
+export interface AgentProps {
   userName: string;
   userId?: string;
   interviewId?: string;
   feedbackId?: string;
   type: "generate" | "interview";
+  profileImage?: any; // Add this property to match the usage
+  profileURL?: any; // Add this property to match the usage
   questions?: string[];
 }
 
@@ -71,12 +73,12 @@ interface GetLatestInterviewsParams {
   limit?: number;
 }
 
-export interface SignInParams {
+interface SignInParams {
   email: string;
   idToken: string;
 }
 
-export interface SignUpParams {
+interface SignUpParams {
   uid: string;
   name: string;
   email: string;
@@ -97,4 +99,3 @@ interface InterviewFormProps {
 interface TechIconProps {
   techStack: string[];
 }
-

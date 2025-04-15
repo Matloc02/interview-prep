@@ -12,7 +12,7 @@ import { toast } from "sonner"
 import { useRouter } from "next/navigation";
 import { auth } from "@/firebase/client"
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth"
-import { signIn, signUp } from "@/lib/actions/auth.actions";
+import { signIn, signUp } from "@/lib/actions/auth.action";
 
 
 type FormType = "sign-in" | "sign-up";
@@ -51,7 +51,6 @@ const AuthForm = ({ type }: { type: FormType }) => {
             uid: userCredentials.user.uid,
             name: name!,
             email,
-            password,
           })
           if(!result?.success) {
             toast.error(result?.message);
@@ -68,6 +67,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
           if(!idToken) {
             toast.error("Sign in Failed. Please try again.");
             return;
+           
           }
 
           await signIn({
@@ -81,6 +81,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
       } catch (error) {
         console.log(error);
         toast.error(`There was an error: ${error}`)
+        return;
       }
      
       
@@ -134,6 +135,14 @@ const isSignIn = type === "sign-in";
               placeholder="Enter your password"
               type="password"
             />
+
+            <Link
+              href="/forgot-password"
+              className="text-sm text-purple-400 hover:underline block mt-2 text-right"
+            >
+              Forgot password?
+            </Link>
+
 
             <Button className="btn" type="submit">
               {isSignIn ? "Sign In" : "Create an Account"}

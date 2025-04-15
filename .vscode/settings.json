@@ -1,0 +1,7 @@
+{
+    "cline.vsCodeLmModelSelector": {
+
+    },
+    "cline.enableCheckpoints": true,
+    "cline.mcpMarketplace.enabled": false
+}
