@@ -1,16 +1,24 @@
+import { Metadata } from "next";
 import dayjs from "dayjs";
 import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { getFeedbackByInterviewId, getInterviewById } from "@/lib/actions/general.action";
-import { Button } from "@/components/ui/button";
-import { getCurrentUser } from "@/lib/actions/auth.action";
 
-export default async function FeedbackPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+import { getFeedbackByInterviewId, getInterviewById } from "@/lib/actions/general.action";
+import { getCurrentUser } from "@/lib/actions/auth.action";
+import { Button } from "@/components/ui/button";
+
+type PageProps = {
+  params: {
+    id: string;
+  };
+};
+
+export const metadata: Metadata = {
+  title: "Interview Feedback",
+};
+
+export default async function FeedbackPage({ params }: PageProps) {
   const user = await getCurrentUser();
   if (!user) redirect("/sign-in");
 
@@ -32,7 +40,8 @@ export default async function FeedbackPage({
           Feedback for your {interview.role} interview
         </h1>
         <p className="text-sm text-gray-400">
-          Taken on {dayjs(feedback.createdAt).format("MMM D, YYYY h:mm A") || "Unknown"}
+          Taken on{" "}
+          {dayjs(feedback.createdAt).format("MMM D, YYYY h:mm A") || "Unknown"}
         </p>
       </div>
 
@@ -40,7 +49,10 @@ export default async function FeedbackPage({
         <Image src="/star.svg" width={22} height={22} alt="star" />
         <p>
           Overall Score:{" "}
-          <span className="text-primary-200 font-bold">{feedback.totalScore}</span>/100
+          <span className="text-primary-200 font-bold">
+            {feedback.totalScore}
+          </span>
+          /100
         </p>
       </div>
 
