@@ -9,21 +9,20 @@ import {
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/actions/auth.action";
 
-interface FeedbackPageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default async function FeedbackPage({ params }: FeedbackPageProps) {
+export default async function FeedbackPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   const user = await getCurrentUser();
   if (!user) redirect("/sign-in");
 
   const interview = await getInterviewById(params.id);
-  const feedback = await getFeedbackByInterviewId({
-    interviewId: params.id,
-    userId: user?.id!,
-  });
+  const feedback = await getFeedbackByInterviewId(params.id);
+
+  // rest of your logic and return
+}
+
 
   if (!interview || !feedback) {
     return (
@@ -108,4 +107,4 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
       </div>
     </section>
   );
-}
+
