@@ -4,11 +4,11 @@ import Image from "next/image";
 import { getFeedbackByInterviewId, getInterviewById } from "@/lib/actions/general.action";
 import { Button } from "@/components/ui/button";
 
-type FeedbackPageProps = {
+type PageProps = {
   params: { id: string };
 };
 
-export default async function FeedbackPage({ params }: FeedbackPageProps) {
+export default async function Page({ params }: PageProps) {
   const { id } = params;
 
   const interview = await getInterviewById(id);
