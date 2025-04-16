@@ -6,6 +6,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage, auth } from "@/firebase/client";
 import { setLogLevel } from "firebase/app";
+
 setLogLevel("debug");
 
 

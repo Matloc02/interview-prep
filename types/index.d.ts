@@ -32,10 +32,11 @@ interface CreateFeedbackParams {
   feedbackId?: string;
 }
 
-interface User {
+export interface User {
   name: string;
   email: string;
   id: string;
+  profileImageURL?: string;
 }
 
 interface InterviewCardProps {
