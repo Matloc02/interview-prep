@@ -9,7 +9,7 @@ type Props = {
   params: { id: string };
 };
 
-export default async function Page({ params }: Props) {
+export default async function Page({ params }: { params: { id: string } }) {
   const { id } = params;
 
   const interview = await getInterviewById(id);
