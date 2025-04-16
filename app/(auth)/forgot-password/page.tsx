@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "@/firebase/client";
+import Link from "next/link";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -34,6 +35,13 @@ export default function ForgotPassword() {
         >
           Send Reset Link
         </button>
+        <p className="mt-4 text-sm text-gray-400">
+          Forgot your password?{" "}
+          <Link href="/forgot-password" className="text-purple-400 hover:underline">
+            Reset it here
+          </Link>
+        </p>
+
         <p className="text-sm mt-4 text-purple-300">{status}</p>
       </div>
     </div>

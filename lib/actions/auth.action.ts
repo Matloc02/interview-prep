@@ -9,12 +9,10 @@ const SESSION_COOKIE_NAME = "ohlura_session";
 
 // Set session cookie
 export async function setSessionCookie(idToken: string) {
-  // Create session cookie using Firebase Admin SDK
   const sessionCookie = await auth.createSessionCookie(idToken, {
     expiresIn: SESSION_DURATION * 1000, // milliseconds
   });
 
-  // Set cookie via headers (not just cookies())
   const cookieStore = await cookies();
   cookieStore.set(SESSION_COOKIE_NAME, sessionCookie, {
     maxAge: SESSION_DURATION,
@@ -25,14 +23,12 @@ export async function setSessionCookie(idToken: string) {
   });
 }
 
-// Define the User type
 interface User {
   id: string;
   name: string;
   email: string;
 }
 
-// Define the SignUpParams type
 interface SignUpParams {
   uid: string;
   name: string;
@@ -110,7 +106,6 @@ export async function signIn(params: SignInParams) {
   }
 }
 
-// Sign out user by clearing the session cookie
 export async function clearSessionCookie() {
   const cookieStore = await cookies();
   cookieStore.set(SESSION_COOKIE_NAME, "", {
@@ -123,7 +118,7 @@ export async function clearSessionCookie() {
 }
 
 export async function getCurrentUser(): Promise<User | null> {
-  const cookieStore = await cookies(); // ✅ FIXED
+  const cookieStore = await cookies();
   const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME)?.value;
   if (!sessionCookie) return null;
 
@@ -144,7 +139,6 @@ export async function getCurrentUser(): Promise<User | null> {
     return null;
   }
 }
-
 
 export async function isAuthenticated() {
   const user = await getCurrentUser();

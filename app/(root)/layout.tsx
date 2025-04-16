@@ -1,14 +1,18 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { isAuthenticated } from "@/lib/actions/auth.action";
 import ProfileMini from "@/components/ui/ProfileMini";
 import LogoutButton from "@/components/ui/LogoutButton"; // Import LogoutButton
+import ProfileUploader from "@/components/dashboard/ProfileUploader";
 
 const Layout = async ({ children }: { children: React.ReactNode }) => {
   const isUserAuthenticated = await isAuthenticated();
-  if (!isUserAuthenticated) redirect("/sign-in");
+
+  // ✅ Protect private routes ONLY
+  if (!isUserAuthenticated) {
+    redirect("/sign-in");
+  }
 
   return (
     <div className="root-layout">
@@ -32,4 +36,4 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default Layout;
+export default Layout;            //root/layout for navbar

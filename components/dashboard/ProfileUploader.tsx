@@ -4,81 +4,51 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { auth, db, storage } from "@/firebase/client";
 import {
-  getDownloadURL,
   ref,
-  uploadBytesResumable,
+  uploadBytes,
+  getDownloadURL,
 } from "firebase/storage";
-import { doc, updateDoc, getDoc } from "firebase/firestore";
-import { onAuthStateChanged } from "firebase/auth";
+import { doc, updateDoc } from "firebase/firestore";
 
-export default function ProfileUploader() {
-  const [userId, setUserId] = useState<string | null>(null);
-  const [preview, setPreview] = useState("/profile.svg");
+export default function ProfileUploader({ userId, initialImage }: { userId: string; initialImage: string }) {
+  const [imageURL, setImageURL] = useState(initialImage);
   const [uploading, setUploading] = useState(false);
 
-  useEffect(() => {
-    onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        setUserId(firebaseUser.uid);
-        const docSnap = await getDoc(doc(db, "users", firebaseUser.uid));
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          setPreview(data.profileImageURL || "/profile.svg");
-        }
-      }
-    });
-  }, []);
-
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file || !userId) return;
-
-    if (!file.type.startsWith("image/")) {
-      alert("Please upload a valid image file.");
-      return;
-    }
-
-    const storageRef = ref(storage, `users/${userId}/profile.jpg`);
-    const uploadTask = uploadBytesResumable(storageRef, file);
+    if (!file) return;
 
     setUploading(true);
+    const fileRef = ref(storage, `profile_pictures/${userId}/${file.name}`);
 
-    uploadTask.on(
-      "state_changed",
-      null,
-      (error) => {
-        console.error("Upload error:", error);
-        setUploading(false);
-      },
-      async () => {
-        const url = await getDownloadURL(uploadTask.snapshot.ref);
-        await updateDoc(doc(db, "users", userId), {
-          profileImageURL: url,
-        });
-        setPreview(url);
-        setUploading(false);
-      }
-    );
+    try {
+      await uploadBytes(fileRef, file);
+      const downloadURL = await getDownloadURL(fileRef);
+      await updateDoc(doc(db, "users", userId), {
+        profileImageURL: downloadURL,
+      });
+
+      setImageURL(downloadURL);
+    } catch (err) {
+      console.error("Upload failed", err);
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
-    <div className="flex flex-col items-center gap-4">
-      <Image
-        src={preview}
-        alt="Profile Preview"
-        width={96}
-        height={96}
-        className="rounded-full border border-purple-500"
-      />
+    <div className="text-center">
+      <div className="relative w-24 h-24 mx-auto mb-4">
+        <Image
+          src={imageURL}
+          alt="Profile"
+          fill
+          className="rounded-full object-cover border-2 border-purple-500"
+        />
+      </div>
 
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handleUpload}
-        className="text-sm text-white"
-      />
-
-      {uploading && <p className="text-sm text-purple-300">Uploading...</p>}
+      <input type="file" accept="image/*" onChange={handleFileChange} disabled={uploading} />
+      {uploading && <p className="text-sm text-purple-300 mt-2">Uploading...</p>}
     </div>
   );
 }

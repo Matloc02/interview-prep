@@ -1,7 +1,6 @@
 import { Toaster } from "sonner";
 import type { Metadata } from "next";
 import { Mona_Sans } from "next/font/google";
-
 import "./globals.css";
 
 const monaSans = Mona_Sans({
@@ -11,7 +10,7 @@ const monaSans = Mona_Sans({
 
 export const metadata: Metadata = {
   title: "OhLura",
-  description: "An AI-powered platform for preparing for mock interviews",
+  description: "An AI-powered platform for preparing for practice interviews",
 };
 
 export default function RootLayout({
