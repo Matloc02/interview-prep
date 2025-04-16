@@ -1,43 +1,44 @@
-"use client"
+"use client";
+
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-export default function InterviewSetup({ children }: { children: React.ReactNode }) {
+export default function InterviewSetupPage() {
   const [jobTitle, setJobTitle] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [duration, setDuration] = useState("10");
   const [style, setStyle] = useState("formal");
   const [resume, setResume] = useState<File | null>(null);
-  
-  
-  const handleSubmit = (e: React.FormEvent) => {
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: Handle submit → send to Vapi + AI backend
+    // TODO: Send to Vapi + AI backend
     console.log({ jobTitle, jobDescription, duration, style, resume });
-  }; 
-  
-return (
-    <div className="min-h-screen flex items-center justify-center  px-4">
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-neutral-900 px-4">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md bg-neutral-800 rounded-3xl p-8 shadow-lg">
-      <div className="root-layout">
-      
-        <Link href="/" className="flex items-center gap-2">
-          <Image src="/logo.svg" alt="MockMate Logo" width={76} height={64} />
-          <h2 className="text-primary-100">OhLura</h2>          
-        </Link>
-        <p className="text-gray-300 mb-0 mt-[-20px]">"From anxious to awesome  Interview prep that works".</p>
-           
-    </div>  
-        
+        className="w-full max-w-md bg-neutral-800 rounded-3xl p-8 shadow-lg"
+      >
+        <div className="mb-6">
+          <Link href="/" className="flex items-center gap-3 mb-2">
+            <Image src="/logo.svg" alt="OhLura Logo" width={64} height={48} />
+            <h2 className="text-xl font-bold text-purple-300">OhLura</h2>
+          </Link>
+          <p className="text-gray-400 text-sm leading-tight">
+            “From anxious to awesome — Interview prep that works.”
+          </p>
+        </div>
+
         <p className="text-gray-400 mb-6">Create your personalized mock interview</p>
 
         <label className="block text-white mb-1">Job Title</label>
         <input
           className="w-full mb-4 px-4 py-2 rounded bg-neutral-700 text-white"
-          placeholder="e.g. medical secretary"
+          placeholder="e.g. Medical Secretary"
           value={jobTitle}
           onChange={(e) => setJobTitle(e.target.value)}
         />
@@ -82,19 +83,14 @@ return (
           onChange={(e) => setResume(e.target.files?.[0] ?? null)}
         />
 
-<button
-  type="submit"
-  className="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 rounded-lg flex items-center justify-center gap-2"
->
-  <Image
-    src="/upload.svg"
-    alt="Upload Icon"
-    width={19}
-    height={16}
-  />
-  <span>Create Interview</span>
-</button>
+        <button
+          type="submit"
+          className="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 rounded-lg flex items-center justify-center gap-2"
+        >
+          <Image src="/upload.svg" alt="Upload Icon" width={19} height={16} />
+          <span>Create Interview</span>
+        </button>
       </form>
     </div>
   );
-}                     //Create InterviewSetup form manually
+}
