@@ -10,7 +10,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/actions/auth.action";
 
-const Feedback = async ({ params }: RouteParams) => {
+  type FeedbackPageParams = {
+    params: {
+      id: string;
+    };
+  };
+  const Feedback = async ({ params }: { params: { id: string } }) => {
   const { id } = await params;
   const user = await getCurrentUser();
 
