@@ -1,29 +1,18 @@
-import { Metadata } from "next";
 import dayjs from "dayjs";
 import Link from "next/link";
 import Image from "next/image";
-import { redirect } from "next/navigation";
-
 import { getFeedbackByInterviewId, getInterviewById } from "@/lib/actions/general.action";
-import { getCurrentUser } from "@/lib/actions/auth.action";
 import { Button } from "@/components/ui/button";
 
-type PageProps = {
-  params: {
-    id: string;
-  };
+type FeedbackPageProps = {
+  params: { id: string };
 };
 
-export const metadata: Metadata = {
-  title: "Interview Feedback",
-};
+export default async function FeedbackPage({ params }: FeedbackPageProps) {
+  const { id } = params;
 
-export default async function FeedbackPage({ params }: PageProps) {
-  const user = await getCurrentUser();
-  if (!user) redirect("/sign-in");
-
-  const interview = await getInterviewById(params.id);
-  const feedback = await getFeedbackByInterviewId(params.id);
+  const interview = await getInterviewById(id);
+  const feedback = await getFeedbackByInterviewId(id);
 
   if (!interview || !feedback) {
     return (
@@ -95,14 +84,11 @@ export default async function FeedbackPage({ params }: PageProps) {
 
       <div className="flex gap-4">
         <Button className="btn-secondary flex-1">
-          <Link href="/" className="w-full text-center">
-            Back to Dashboard
-          </Link>
+          <Link href="/" className="w-full text-center">Back to Dashboard</Link>
         </Button>
+
         <Button className="btn-primary flex-1">
-          <Link href={`/interview/${params.id}`} className="w-full text-center">
-            Retake Interview
-          </Link>
+          <Link href={`/interview/${params.id}`} className="w-full text-center">Retake Interview</Link>
         </Button>
       </div>
     </section>
