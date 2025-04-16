@@ -1,14 +1,15 @@
+// app/(root)/interview/[id]/feedback/page.tsx
 import dayjs from "dayjs";
 import Link from "next/link";
 import Image from "next/image";
 import { getFeedbackByInterviewId, getInterviewById } from "@/lib/actions/general.action";
 import { Button } from "@/components/ui/button";
 
-type PageProps = {
+type Props = {
   params: { id: string };
 };
 
-export default async function Page({ params }: PageProps) {
+export default async function Page({ params }: Props) {
   const { id } = params;
 
   const interview = await getInterviewById(id);
@@ -29,8 +30,7 @@ export default async function Page({ params }: PageProps) {
           Feedback for your {interview.role} interview
         </h1>
         <p className="text-sm text-gray-400">
-          Taken on{" "}
-          {dayjs(feedback.createdAt).format("MMM D, YYYY h:mm A") || "Unknown"}
+          Taken on {dayjs(feedback.createdAt).format("MMM D, YYYY h:mm A")}
         </p>
       </div>
 
@@ -38,10 +38,7 @@ export default async function Page({ params }: PageProps) {
         <Image src="/star.svg" width={22} height={22} alt="star" />
         <p>
           Overall Score:{" "}
-          <span className="text-primary-200 font-bold">
-            {feedback.totalScore}
-          </span>
-          /100
+          <span className="text-primary-200 font-bold">{feedback.totalScore}</span>/100
         </p>
       </div>
 
@@ -88,7 +85,9 @@ export default async function Page({ params }: PageProps) {
         </Button>
 
         <Button className="btn-primary flex-1">
-          <Link href={`/interview/${params.id}`} className="w-full text-center">Retake Interview</Link>
+          <Link href={`/interview/${params.id}`} className="w-full text-center">
+            Retake Interview
+          </Link>
         </Button>
       </div>
     </section>
