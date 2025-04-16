@@ -1,6 +1,7 @@
 import { getCurrentUser } from "@/lib/actions/auth.action";
 import ProfileUploader from "@/components/dashboard/ProfileUploader";
 
+
 export default async function DashboardPage() {
   const user = await getCurrentUser();
 

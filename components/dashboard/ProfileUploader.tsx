@@ -2,60 +2,82 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { auth, db, storage } from "@/firebase/client";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { doc, updateDoc } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { db, storage, auth } from "@/firebase/client";
+import { setLogLevel } from "firebase/app";
+setLogLevel("debug");
 
-export default function ProfileUploader({ userId, initialImage }: { userId: string; initialImage: string }) {
-  const [imageURL, setImageURL] = useState(initialImage);
+
+type ProfileUploaderProps = {
+  userId: string;
+  initialImage: string;
+};
+
+const ProfileUploader = ({ userId, initialImage }: ProfileUploaderProps) => {
+  const [profileURL, setProfileURL] = useState(initialImage);
   const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState("");
+  console.log("🔐 Client UID:", auth.currentUser?.uid);
+  
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploading(true);
-    setError("");
-
-    const fileRef = ref(storage, `profile_pictures/${userId}/${file.name}`);
-
+  const handleUpload = async (file: File) => {
+    if (!file || !auth.currentUser) {
+      console.error("❌ No file or user");
+      return;
+    }
+    console.log("📤 Path:", `profile_pictures/${auth.currentUser?.uid}/${file.name}`);
+    const userId = auth.currentUser.uid;
+    const filePath = `profile_pictures/${userId}/${file.name}`;
+    const storageRef = ref(storage, filePath);
+  
     try {
-      console.log("📤 Uploading to:", fileRef.fullPath);
-      await uploadBytes(fileRef, file);
-      console.log("✅ Upload successful");
-
-      const downloadURL = await getDownloadURL(fileRef);
-      console.log("🔗 Download URL:", downloadURL);
-
+      console.log("📤 Uploading to:", filePath);
+      await uploadBytes(storageRef, file);
+  
+      const downloadURL = await getDownloadURL(storageRef);
+      console.log("✅ Uploaded. Download URL:", downloadURL);
+  
       await updateDoc(doc(db, "users", userId), {
         profileImageURL: downloadURL,
       });
-      console.log("📄 Firestore updated");
-
-      setImageURL(downloadURL);
-    } catch (err: any) {
-      console.error("❌ Upload failed:", err.message);
-      setError(err.message || "Upload failed");
-    } finally {
-      setUploading(false);
+  
+      alert("✅ Profile picture updated!");
+    } catch (error) {
+      console.error("❌ Upload failed:", error);
     }
   };
+  
 
   return (
-    <div className="text-center">
-      <div className="relative w-24 h-24 mx-auto mb-4">
+    <div className="text-center flex flex-col items-center gap-4">
+      <div className="w-24 h-24 relative">
         <Image
-          src={imageURL}
-          alt="Profile"
-          fill
+          src={profileURL}
+          alt="Profile Image"
+          width={96}
+          height={96}
           className="rounded-full object-cover border-2 border-purple-500"
         />
       </div>
 
-      <input type="file" accept="image/*" onChange={handleFileChange} disabled={uploading} />
-      {uploading && <p className="text-sm text-purple-300 mt-2">Uploading...</p>}
-      {error && <p className="text-sm text-red-400 mt-2">❌ {error}</p>}
+      <label className="text-white font-medium">
+        {uploading ? "Uploading..." : "Change Profile Picture"}
+      </label>
+
+      <input
+        type="file"
+        accept="image/*"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) {
+            console.log("📁 File selected:", file);
+            handleUpload(file);
+          }
+        }}
+        className="text-white"
+      />
     </div>
   );
-}
+};
+
+export default ProfileUploader;
