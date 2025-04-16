@@ -2,10 +2,7 @@ import dayjs from "dayjs";
 import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import {
-  getFeedbackByInterviewId,
-  getInterviewById,
-} from "@/lib/actions/general.action";
+import { getFeedbackByInterviewId, getInterviewById } from "@/lib/actions/general.action";
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/actions/auth.action";
 
@@ -19,10 +16,6 @@ export default async function FeedbackPage({
 
   const interview = await getInterviewById(params.id);
   const feedback = await getFeedbackByInterviewId(params.id);
-
-  // rest of your logic and return
-}
-
 
   if (!interview || !feedback) {
     return (
@@ -39,8 +32,7 @@ export default async function FeedbackPage({
           Feedback for your {interview.role} interview
         </h1>
         <p className="text-sm text-gray-400">
-          Taken on{" "}
-          {dayjs(feedback.createdAt).format("MMM D, YYYY h:mm A") || "Unknown"}
+          Taken on {dayjs(feedback.createdAt).format("MMM D, YYYY h:mm A") || "Unknown"}
         </p>
       </div>
 
@@ -48,10 +40,7 @@ export default async function FeedbackPage({
         <Image src="/star.svg" width={22} height={22} alt="star" />
         <p>
           Overall Score:{" "}
-          <span className="text-primary-200 font-bold">
-            {feedback.totalScore}
-          </span>
-          /100
+          <span className="text-primary-200 font-bold">{feedback.totalScore}</span>/100
         </p>
       </div>
 
@@ -98,7 +87,6 @@ export default async function FeedbackPage({
             Back to Dashboard
           </Link>
         </Button>
-
         <Button className="btn-primary flex-1">
           <Link href={`/interview/${params.id}`} className="w-full text-center">
             Retake Interview
@@ -107,4 +95,4 @@ export default async function FeedbackPage({
       </div>
     </section>
   );
-
+}
