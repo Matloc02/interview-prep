@@ -20,8 +20,9 @@ export default async function DashboardPage() {
       {/* ✅ Show the uploader */}
       <ProfileUploader
         userId={user.id}
-        initialImage={user.profileImageURL || "/profile.svg"}
-      />
+        initialImage={(user as any).profileImageURL || "/profile.svg"}
+/>
+
     </div>
   );
 }

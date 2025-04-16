@@ -33,11 +33,14 @@ interface CreateFeedbackParams {
 }
 
 export interface User {
-  name: string;
-  email: string;
   id: string;
+  email: string;
+  name: string;
+  // ✅ Add this line:
   profileImageURL?: string;
+  // ...any other fields
 }
+
 
 interface InterviewCardProps {
   interviewId?: string;
