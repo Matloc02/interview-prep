@@ -1,15 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { getCurrentUserClient } from "@/lib/supabase/session.client"; // 🆕 client-side auth check
 
 export default function InterviewSetupPage() {
+  const router = useRouter();
   const [jobTitle, setJobTitle] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [duration, setDuration] = useState("10");
   const [style, setStyle] = useState("formal");
   const [resume, setResume] = useState<File | null>(null);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const user = await getCurrentUserClient();
+      if (!user) router.push("/sign-in");
+    };
+    checkAuth();
+  }, [router]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

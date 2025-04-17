@@ -1,6 +1,5 @@
-import { getCurrentUser } from "@/lib/actions/auth.action";
+import { getCurrentUser } from "@/lib/supabase/session";
 import ProfileUploader from "@/components/dashboard/ProfileUploader";
-
 
 export default async function DashboardPage() {
   const user = await getCurrentUser();
@@ -17,12 +16,10 @@ export default async function DashboardPage() {
     <div className="p-6 text-white">
       <h1 className="text-2xl font-bold mb-4">Welcome, {user.name}</h1>
 
-      {/* ✅ Show the uploader */}
       <ProfileUploader
         userId={user.id}
-        initialImage={(user as any).profileImageURL || "/profile.svg"}
-/>
-
+        initialImage={user.profileImageURL || "/profile.svg"}
+      />
     </div>
   );
 }

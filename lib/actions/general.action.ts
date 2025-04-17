@@ -2,9 +2,8 @@
 
 import { generateObject } from "ai";
 import { google } from "@ai-sdk/google";
-
-import { db } from "@/firebase/admin";
 import { feedbackSchema } from "@/constants";
+import { supabaseAdmin } from "@/lib/supabase/server";
 import {
   Interview,
   Feedback,
@@ -42,29 +41,32 @@ export async function createFeedback(
         - **Problem-Solving**: Ability to analyze problems and propose solutions.
         - **Cultural & Role Fit**: Alignment with company values and job role.
         - **Confidence & Clarity**: Confidence in responses, engagement, and clarity.
-        `,
+      `,
       system:
         "You are a professional interviewer analyzing a mock interview. Your task is to evaluate the candidate based on structured categories",
     });
 
-    const feedback = {
-      interviewId,
-      userId,
-      totalScore: object.totalScore,
-      categoryScores: object.categoryScores,
-      strengths: object.strengths,
-      areasForImprovement: object.areasForImprovement,
-      finalAssessment: object.finalAssessment,
-      createdAt: new Date().toISOString(),
-    };
+    const { data, error } = await supabaseAdmin
+      .from("feedback")
+      .upsert([
+        {
+          id: feedbackId || undefined,
+          interview_id: interviewId,
+          user_id: userId,
+          total_score: object.totalScore,
+          category_scores: object.categoryScores,
+          strengths: object.strengths,
+          areas_for_improvement: object.areasForImprovement,
+          final_assessment: object.finalAssessment,
+          created_at: new Date().toISOString(),
+        },
+      ])
+      .select("id")
+      .single();
 
-    const feedbackRef = feedbackId
-      ? db.collection("feedback").doc(feedbackId)
-      : db.collection("feedback").doc();
+    if (error) throw error;
 
-    await feedbackRef.set(feedback);
-
-    return { success: true, feedbackId: feedbackRef.id };
+    return { success: true, feedbackId: data.id };
   } catch (error) {
     console.error("Error saving feedback:", error);
     return { success: false };
@@ -73,8 +75,14 @@ export async function createFeedback(
 
 export async function getInterviewById(id: string): Promise<Interview | null> {
   try {
-    const interview = await db.collection("interviews").doc(id).get();
-    return interview.exists ? { id: interview.id, ...interview.data() } as Interview : null;
+    const { data, error } = await supabaseAdmin
+      .from("interviews")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (error || !data) return null;
+    return data as Interview;
   } catch (error) {
     console.error("🔥 Error in getInterviewById:", error);
     return null;
@@ -87,17 +95,16 @@ export async function getFeedbackByInterviewId(
   try {
     const { interviewId, userId } = params;
 
-    const querySnapshot = await db
-      .collection("feedback")
-      .where("interviewId", "==", interviewId)
-      .where("userId", "==", userId)
+    const { data, error } = await supabaseAdmin
+      .from("feedback")
+      .select("*")
+      .eq("interview_id", interviewId)
+      .eq("user_id", userId)
       .limit(1)
-      .get();
+      .single();
 
-    if (querySnapshot.empty) return null;
-
-    const feedbackDoc = querySnapshot.docs[0];
-    return { id: feedbackDoc.id, ...feedbackDoc.data() } as Feedback;
+    if (error || !data) return null;
+    return data as Feedback;
   } catch (error) {
     console.error("🔥 Error in getFeedbackByInterviewId:", error);
     return null;
@@ -110,16 +117,16 @@ export async function getLatestInterviews(
   try {
     const { userId, limit = 20 } = params;
 
-    const interviews = await db
-      .collection("interviews")
-      .orderBy("createdAt", "desc")
-      .where("finalized", "==", true)
-      .limit(limit)
-      .get();
+    const { data, error } = await supabaseAdmin
+      .from("interviews")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("finalized", true)
+      .order("created_at", { ascending: false })
+      .limit(limit);
 
-    return interviews.empty
-      ? []
-      : interviews.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as Interview[];
+    if (error || !data) return null;
+    return data as Interview[];
   } catch (error) {
     console.error("🔥 Error in getLatestInterviews:", error);
     return null;
@@ -130,15 +137,14 @@ export async function getInterviewsByUserId(
   userId: string
 ): Promise<Interview[] | null> {
   try {
-    const interviews = await db
-      .collection("interviews")
-      .where("userId", "==", userId)
-      .orderBy("createdAt", "desc")
-      .get();
+    const { data, error } = await supabaseAdmin
+      .from("interviews")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
 
-    return interviews.empty
-      ? []
-      : interviews.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as Interview[];
+    if (error || !data) return null;
+    return data as Interview[];
   } catch (error) {
     console.error("🔥 Error in getInterviewsByUserId:", error);
     return null;

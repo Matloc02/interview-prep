@@ -2,13 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { doc, updateDoc } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { db, storage, auth } from "@/firebase/client";
-import { setLogLevel } from "firebase/app";
-
-setLogLevel("debug");
-
+import { supabase } from "@/lib/supabase/client";
 
 type ProfileUploaderProps = {
   userId: string;
@@ -18,36 +12,49 @@ type ProfileUploaderProps = {
 const ProfileUploader = ({ userId, initialImage }: ProfileUploaderProps) => {
   const [profileURL, setProfileURL] = useState(initialImage);
   const [uploading, setUploading] = useState(false);
-  console.log("🔐 Client UID:", auth.currentUser?.uid);
-  
 
   const handleUpload = async (file: File) => {
-    if (!file || !auth.currentUser) {
-      console.error("❌ No file or user");
+    setUploading(true);
+
+    const filePath = `profile-pictures/${userId}/${file.name}`;
+
+    const { data, error } = await supabase.storage
+      .from("profile-pictures")
+      .upload(filePath, file, { upsert: true });
+
+    if (error) {
+      console.error("❌ Upload error:", error);
+      setUploading(false);
       return;
     }
-    console.log("📤 Path:", `profile_pictures/${auth.currentUser?.uid}/${file.name}`);
-    const userId = auth.currentUser.uid;
-    const filePath = `profile_pictures/${userId}/${file.name}`;
-    const storageRef = ref(storage, filePath);
-  
-    try {
-      console.log("📤 Uploading to:", filePath);
-      await uploadBytes(storageRef, file);
-  
-      const downloadURL = await getDownloadURL(storageRef);
-      console.log("✅ Uploaded. Download URL:", downloadURL);
-  
-      await updateDoc(doc(db, "users", userId), {
-        profileImageURL: downloadURL,
-      });
-  
-      alert("✅ Profile picture updated!");
-    } catch (error) {
-      console.error("❌ Upload failed:", error);
+
+    // Get public URL
+    const { data: publicUrlData } = supabase.storage
+      .from("profile-pictures")
+      .getPublicUrl(filePath);
+
+    const publicURL = publicUrlData?.publicUrl;
+    if (!publicURL) {
+      console.error("❌ Failed to get public URL");
+      setUploading(false);
+      return;
     }
+
+    // Update user's profile image URL in Supabase DB
+    const { error: updateError } = await supabase
+      .from("users")
+      .update({ profileImageURL: publicURL })
+      .eq("id", userId);
+
+    if (updateError) {
+      console.error("❌ Failed to update profile URL:", updateError);
+    } else {
+      alert("✅ Profile picture updated!");
+      setProfileURL(publicURL);
+    }
+
+    setUploading(false);
   };
-  
 
   return (
     <div className="text-center flex flex-col items-center gap-4">
@@ -70,10 +77,7 @@ const ProfileUploader = ({ userId, initialImage }: ProfileUploaderProps) => {
         accept="image/*"
         onChange={(e) => {
           const file = e.target.files?.[0];
-          if (file) {
-            console.log("📁 File selected:", file);
-            handleUpload(file);
-          }
+          if (file) handleUpload(file);
         }}
         className="text-white"
       />

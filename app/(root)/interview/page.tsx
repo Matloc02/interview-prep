@@ -1,17 +1,25 @@
 import Agent from "@/components/Agent";
-import { getCurrentUser } from "@/lib/actions/auth.action";
+import { getCurrentUser } from "@/lib/supabase/session";
 
 const Page = async () => {
   const user = await getCurrentUser();
+
+  if (!user) {
+    return (
+      <div className="p-6 text-white">
+        <p>You must be signed in to access interview generation.</p>
+      </div>
+    );
+  }
 
   return (
     <>
       <h3>Interview generation</h3>
 
       <Agent
-        userName={user?.name!}
-        userId={user?.id}
-        profileImage={user?.profileImageUrl}
+        userName={user.name}
+        userId={user.id}
+        profileImage={user.profileImageURL || "/profile.svg"}
         type="generate"
       />
     </>

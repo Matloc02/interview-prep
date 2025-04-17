@@ -1,14 +1,13 @@
 "use client";
 
 import { useEffect } from "react";
-import { signOut } from "firebase/auth";
-import { auth } from "@/firebase/client";
+import { supabase } from "@/lib/supabase/client";
 
 export default function SignOutPage() {
   useEffect(() => {
     const run = async () => {
-      await signOut(auth); // clear client session
-      window.location.href = "/api/sign-out"; // clears cookie + redirects
+      await supabase.auth.signOut(); // Supabase logout
+      window.location.href = "/api/sign-out"; // still clears cookies + redirects if needed
     };
     run();
   }, []);

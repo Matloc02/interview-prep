@@ -8,23 +8,26 @@ import {
   getInterviewById,
 } from "@/lib/actions/general.action";
 import { Button } from "@/components/ui/button";
-import { getCurrentUser } from "@/lib/actions/auth.action";
+import { getCurrentUser } from "@/lib/supabase/session";
 
-  type FeedbackPageParams = {
-    params: {
-      id: string;
-    };
+type FeedbackPageParams = {
+  params: {
+    id: string;
   };
-  const Feedback = async ({ params }: { params: { id: string } }) => {
-  const { id } = await params;
+};
+
+const Feedback = async ({ params }: FeedbackPageParams) => {
+  const { id } = params;
   const user = await getCurrentUser();
+
+  if (!user) redirect("/sign-in");
 
   const interview = await getInterviewById(id);
   if (!interview) redirect("/");
 
   const feedback = await getFeedbackByInterviewId({
     interviewId: id,
-    userId: user?.id!,
+    userId: user.id,
   });
 
   return (

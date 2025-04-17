@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import InterviewCard from "@/components/InterviewCard";
-import { getCurrentUser } from "@/lib/actions/auth.action";
+import { getCurrentUser } from "@/lib/supabase/session";
 import {
   getInterviewsByUserId,
   getLatestInterviews,
@@ -11,13 +11,22 @@ import {
 async function Home() {
   const user = await getCurrentUser();
 
-  const [userInterviews, allInterview] = await Promise.all([
-    getInterviewsByUserId(user?.id!),
-    getLatestInterviews({ userId: user?.id! }),
+  if (!user) {
+    return (
+      <div className="p-6 text-white text-center">
+        <h2 className="text-2xl font-semibold">Welcome to OhLura</h2>
+        <p className="mt-2">Please <Link href="/sign-in" className="text-purple-400 underline">sign in</Link> to access your dashboard.</p>
+      </div>
+    );
+  }
+
+  const [userInterviews, allInterviews] = await Promise.all([
+    getInterviewsByUserId(user.id),
+    getLatestInterviews({ userId: user.id }),
   ]);
 
-  const hasPastInterviews = userInterviews?.length! > 0;
-  const hasUpcomingInterviews = allInterview?.length! > 0;
+  const hasPastInterviews = userInterviews && userInterviews.length > 0;
+  const hasUpcomingInterviews = allInterviews && allInterviews.length > 0;
 
   return (
     <>
@@ -47,10 +56,10 @@ async function Home() {
 
         <div className="interviews-section">
           {hasPastInterviews ? (
-            userInterviews?.map((interview) => (
+            userInterviews.map((interview) => (
               <InterviewCard
                 key={interview.id}
-                userId={user?.id || ""}
+                userId={user.id}
                 interviewId={interview.id}
                 role={interview.role}
                 type={interview.type}
@@ -59,7 +68,7 @@ async function Home() {
               />
             ))
           ) : (
-            <p>You haven&apos;t taken any interviews yet</p>
+            <p>You haven&apos;t taken any interviews yet.</p>
           )}
         </div>
       </section>
@@ -69,10 +78,10 @@ async function Home() {
 
         <div className="interviews-section">
           {hasUpcomingInterviews ? (
-            allInterview?.map((interview) => (
+            allInterviews.map((interview) => (
               <InterviewCard
                 key={interview.id}
-                userId={user?.id || ""}
+                userId={user.id}
                 interviewId={interview.id}
                 role={interview.role}
                 type={interview.type}
@@ -81,7 +90,7 @@ async function Home() {
               />
             ))
           ) : (
-            <p>There are no interviews available</p>
+            <p>There are no interviews available.</p>
           )}
         </div>
       </section>
@@ -90,5 +99,3 @@ async function Home() {
 }
 
 export default Home;
-//Home logged in
-
