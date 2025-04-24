@@ -10,8 +10,7 @@ export default function SampleInterviewPage({
 }: {
   params: { id: string };
 }) {
-
-  
+ 
 
   const interview = sampleInterviews.find((set) => set.id === params.id);
 
