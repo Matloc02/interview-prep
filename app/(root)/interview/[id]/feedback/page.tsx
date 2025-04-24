@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/supabase/session";
 
-export default async function Feedback({
+export default async function FeedbackPage({
   params,
 }: {
   params: { id: string };
@@ -18,7 +18,6 @@ export default async function Feedback({
   const { id } = params;
 
   const user = await getCurrentUser();
-
   if (!user) redirect("/sign-in");
 
   const interviews = await getInterviewsByUserId(user.id);
