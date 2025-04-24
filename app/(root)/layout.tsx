@@ -6,13 +6,6 @@ import ProfileMini from "@/components/ui/ProfileMini";
 import LogoutButton from "@/components/ui/LogoutButton";
 import { ThemeToggle } from "@/components/ui/theme-provider";
 
-
-
-// Export the getFeedbackByInterviewId function
-export const getFeedbackByInterviewId = async ({ interviewId, userId }: { interviewId: string; userId: string }) => {
-  // Implementation of the function
-};
-// Removed duplicate declaration of getCurrentUser
 const Layout = async ({ children }: { children: React.ReactNode }) => {
   const user = await getCurrentUser(); // Supabase user check
 
@@ -32,14 +25,15 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
             className="rounded-full border border-purple-500 cursor-pointer hover:ring-2 hover:ring-purple-500"
           />
           <h2 className="max-w-4xl mx-auto p-1 text-primary-100">OhLura</h2>
-          </Link>
-          <p className="text-gray-300 mb-2">"From anxious to awesome — interview prep that works".</p>
+        </Link>
+        <p className="text-gray-300 mb-2">
+          "From anxious to awesome — interview prep that works".
+        </p>
 
-        {/* Top-right profile + logout */}
         <div className="flex items-center gap-3">
           <ProfileMini />
           <LogoutButton />
-          <ThemeToggle/>
+          <ThemeToggle />
         </div>
       </nav>
       {children}
@@ -47,4 +41,4 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default Layout; //main page
+export default Layout;
