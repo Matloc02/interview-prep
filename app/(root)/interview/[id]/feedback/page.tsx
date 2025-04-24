@@ -10,13 +10,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/supabase/session";
 
-type FeedbackPageParams = {
-  params: {
-    id: string;
-  };
+type PageProps<T = {}> = {
+  params: T;
+  searchParams?: Record<string, string | string[] | undefined>;
 };
 
-const Feedback = async ({ params }: FeedbackPageParams) => {
+const Feedback = async ({ params }: PageProps<{ id: string }>) => {
   const { id } = params;
   const user = await getCurrentUser();
 
@@ -24,7 +23,7 @@ const Feedback = async ({ params }: FeedbackPageParams) => {
 
   const interviews = await getInterviewsByUserId(user.id);
   const interview = interviews?.find((interview) => interview.id === id);
-  if (!interview) redirect("/");  
+  if (!interview) redirect("/");
 
   const feedback = await getFeedbackByInterviewId({
     interviewId: id,
