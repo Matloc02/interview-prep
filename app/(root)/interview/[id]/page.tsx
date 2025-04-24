@@ -1,8 +1,5 @@
 import Image from "next/image";
 import { redirect } from "next/navigation";
-type PageProps<T> = {
-  params: T;
-};
 
 import Agent from "@/components/Agent";
 import { getRandomInterviewCover } from "@/lib/utils";
@@ -13,7 +10,11 @@ import {
 import { getCurrentUser } from "@/lib/supabase/session";
 import DisplayTechIcons from "@/components/DisplayTechIcons";
 
-export default async function InterviewDetails({ params }: PageProps<{ id: string }>) {
+export default async function InterviewDetails({
+  params,
+}: {
+  params: { id: string };
+}) {
   const { id } = params;
 
   const user = await getCurrentUser();
