@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 
 import {
   getFeedbackByInterviewId,
-  getInterviewById,
+  getInterviewsByUserId,
 } from "@/lib/actions/general.action";
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/supabase/session";
@@ -22,8 +22,9 @@ const Feedback = async ({ params }: FeedbackPageParams) => {
 
   if (!user) redirect("/sign-in");
 
-  const interview = await getInterviewById(id);
-  if (!interview) redirect("/");
+  const interviews = await getInterviewsByUserId(user.id);
+  const interview = interviews?.find((interview) => interview.id === id);
+  if (!interview) redirect("/");  
 
   const feedback = await getFeedbackByInterviewId({
     interviewId: id,

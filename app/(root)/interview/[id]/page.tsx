@@ -6,17 +6,25 @@ import { getRandomInterviewCover } from "@/lib/utils";
 
 import {
   getFeedbackByInterviewId,
-  getInterviewById,
+  getInterviewsByUserId,
 } from "@/lib/actions/general.action";
 import { getCurrentUser } from "@/lib/supabase/session";
 import DisplayTechIcons from "@/components/DisplayTechIcons";
+
+// Define RouteParams type
+type RouteParams = {
+  params: {
+    id: string;
+  };
+};
 
 const InterviewDetails = async ({ params }: RouteParams) => {
   const { id } = await params;
 
   const user = await getCurrentUser();
 
-  const interview = await getInterviewById(id);
+  const interviews = await getInterviewsByUserId(user?.id!);
+  const interview = interviews?.find((interview) => interview.id === id);
   if (!interview) redirect("/");
 
   const feedback = await getFeedbackByInterviewId({

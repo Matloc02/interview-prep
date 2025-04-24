@@ -1,8 +1,0 @@
-{
-  "projects": {
-    "default": "ohlura-ai-interviewer",
-    "staging": "ohlura-ai-interviewer"
-  },
-  "targets": {},
-  "etags": {}
-}

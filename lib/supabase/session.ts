@@ -1,37 +1,49 @@
 // lib/supabase/session.ts
-"use server";
-
-import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
-import { User } from "@/types";
+import { createServerClient } from "@supabase/ssr";
+import { Database } from "./types";
 
-export async function getCurrentUser(): Promise<User | null> {
-  const cookieStore = cookies();
-  const supabase = createServerClient(
+export function createServerSupabaseClient() {
+  const cookieStore = cookies(); // ✅ Only reading, this is allowed
+
+  return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { cookies: () => cookieStore }
+    {
+      cookies: {
+        get: async (name: string) => {
+          const cookieStore = await cookies(); // ✅ await here
+          return cookieStore.get(name)?.value;
+        },
+      },
+    }
   );
+}
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
 
-  if (!session?.user) return null;
+// ✅ Helper to get the full current user object from Supabase
+export async function getCurrentUser() {
+  const supabase = await createServerSupabaseClient();
 
-  const { data, error } = await supabase
+  const { data: { user } ,error, } = await supabase.auth.getUser();
+
+  if (!user || error) return null;
+
+  const { data: profile, error: profileError } = await supabase
     .from("users")
     .select("*")
-    .eq("id", session.user.id)
+    .eq("id", user.id)
     .single();
 
-  if (error || !data) return null;
+  if (!profile || profileError) return null;
 
   return {
-    id: data.id,
-    name: data.name,
-    email: data.email,
-    profileImageURL: data.profile_image_url,
-    resumeURL: data.resume_url,
+    id: profile.id,
+    name: profile.name,
+    email: profile.email,
+    profileImageURL: profile.profile_image_url,
+    resumeURL: profile.resume_url,
+    phone: profile.phone,
+    website: profile.website,
   };
 }

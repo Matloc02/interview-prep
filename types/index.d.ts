@@ -13,8 +13,10 @@ interface Feedback {
   createdAt: string;
 }
 
-interface Interview {
+export interface Interview {
   id: string;
+  title: string;
+  date: string;
   role: string;
   level: string;
   questions: string[];
@@ -23,6 +25,7 @@ interface Interview {
   userId: string;
   type: string;
   finalized: boolean;
+  description: string; // Added description property
 }
 
 interface CreateFeedbackParams {
@@ -35,20 +38,20 @@ interface CreateFeedbackParams {
 export interface User {
   id: string;
   email: string;
-  name: string;
-  // ✅ Add this line:
-  profileImageURL?: string;
-  // ...any other fields
+  name: string;  // ✅ Add this line:
+  profileImageURL?: string;  // ...any other fields
+  resumeURL: string; // Added resumeURL property
 }
 
 
-interface InterviewCardProps {
+export interface InterviewCardProps {
   interviewId?: string;
   userId?: string;
   role: string;
   type: string;
   techstack: string[];
   createdAt?: string;
+  description?: string;
 }
 
 export interface AgentProps {
@@ -82,7 +85,7 @@ interface SignInParams {
   idToken: string;
 }
 
-interface SignUpParams {
+export interface SignUpParams {
   uid: string;
   name: string;
   email: string;

@@ -16,6 +16,7 @@ interface InterviewCardProps {
   type: string;
   techstack: string[];
   createdAt: string | number;
+  description?: string;
 }
 
 const InterviewCard = async ({
@@ -25,6 +26,7 @@ const InterviewCard = async ({
     type,
     techstack,
     createdAt,
+    description,
   }: InterviewCardProps) => {
     const feedback =
       userId && interviewId

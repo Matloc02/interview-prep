@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { getCurrentUserClient } from "@/lib/supabase/session.client"; // 🆕 client-side auth check
+import { createInterview } from "@/lib/actions/general.action";
 
 export default function InterviewSetupPage() {
   const router = useRouter();
@@ -22,11 +23,32 @@ export default function InterviewSetupPage() {
     checkAuth();
   }, [router]);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // TODO: Send to Vapi + AI backend
-    console.log({ jobTitle, jobDescription, duration, style, resume });
-  };
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+
+  const user = await getCurrentUserClient();
+  if (!user) return alert("Not signed in");
+
+  const techstack = jobDescription
+    .toLowerCase()
+    .match(/\b(node|react|vue|python|typescript|java|postgres)\b/g) || [];
+
+  const res = await createInterview({
+    userId: user.id,
+    jobTitle,
+    jobDescription,
+    duration,
+    style,
+    techstack,
+  });
+
+  if (res.success) {
+    alert("Interview created successfully!");
+  } else {
+    alert("Failed to create interview.");
+  }
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-neutral-900 px-4">
@@ -35,20 +57,16 @@ export default function InterviewSetupPage() {
         className="w-full max-w-md bg-neutral-800 rounded-3xl p-8 shadow-lg"
       >
         <div className="mb-6">
-          <Link href="/" className="flex items-center gap-3 mb-2">
-            <Image src="/logo.svg" alt="OhLura Logo" width={64} height={48} />
-            <h2 className="text-xl font-bold text-purple-300">OhLura</h2>
-          </Link>
-          <p className="text-gray-400 text-sm leading-tight">
-            “From anxious to awesome — Interview prep that works.”
-          </p>
+          <Link href="/" className="flex items-center justify-center gap-3 mb-2">
+          <div className="flex items-center justify-center mb-2"> <img src="/Lt_Blue_logo.png" alt="logo" style={{ borderRadius: "9px" }} width={330} height={100} /></div>            
+          </Link>          
         </div>
 
-        <p className="text-gray-400 mb-6">Create your personalized mock interview</p>
+        <p className="flex items-center justify-center gap-3 mb-2">Create your personalized mock interview</p>
 
         <label className="block text-white mb-1">Job Title</label>
         <input
-          className="w-full mb-4 px-4 py-2 rounded bg-neutral-700 text-white"
+          className="w-full mb-4 px-4 py-2 rounded bg-neutral-700 text-white cursor-pointer"
           placeholder="e.g. Medical Secretary"
           value={jobTitle}
           onChange={(e) => setJobTitle(e.target.value)}
@@ -56,7 +74,7 @@ export default function InterviewSetupPage() {
 
         <label className="block text-white mb-1">Job Description</label>
         <textarea
-          className="w-full mb-4 px-4 py-2 rounded bg-neutral-700 text-white"
+          className="w-full mb-4 px-4 py-2 rounded bg-neutral-700 text-white cursor-pointer"
           placeholder="Paste job description or type a few role details..."
           rows={4}
           value={jobDescription}
@@ -65,7 +83,7 @@ export default function InterviewSetupPage() {
 
         <label className="block text-white mb-1">Interview Style</label>
         <select
-          className="w-full mb-4 px-4 py-2 rounded bg-neutral-700 text-white"
+          className="w-full mb-4 px-4 py-2 rounded bg-neutral-700 text-white cursor-pointer"
           value={style}
           onChange={(e) => setStyle(e.target.value)}
         >
@@ -77,7 +95,7 @@ export default function InterviewSetupPage() {
 
         <label className="block text-white mb-1">Interview Duration</label>
         <select
-          className="w-full mb-4 px-4 py-2 rounded bg-neutral-700 text-white"
+          className="w-full mb-4 px-4 py-2 rounded bg-neutral-700 text-white cursor-pointer"
           value={duration}
           onChange={(e) => setDuration(e.target.value)}
         >
@@ -90,13 +108,14 @@ export default function InterviewSetupPage() {
         <label className="block text-white mb-1">Upload Resume (Optional)</label>
         <input
           type="file"
-          className="w-full mb-6 file:bg-neutral-700 file:text-white file:rounded file:px-4 file:py-2"
+          className="w-full mb-6 file:bg-neutral-700 file:text-white file:rounded file:px-4 file:py-2 cursor-pointer"
           onChange={(e) => setResume(e.target.files?.[0] ?? null)}
         />
 
         <button
           type="submit"
-          className="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 rounded-lg flex items-center justify-center gap-2"
+          className="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 rounded-lg flex items-center justify-center gap-2
+          cursor-pointer"
         >
           <Image src="/upload.svg" alt="Upload Icon" width={19} height={16} />
           <span>Create Interview</span>

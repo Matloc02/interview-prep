@@ -1,13 +1,11 @@
-// next.config.js
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "firebasestorage.googleapis.com",
+        protocol: 'https',
+        hostname: 'dpmhivjrfzhhikgnqclw.supabase.co',
+        pathname: '/storage/**',
       },
     ],
   },

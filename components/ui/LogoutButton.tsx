@@ -1,18 +1,15 @@
 "use client";
 
-import { signOut } from "firebase/auth";
-import { auth } from "@/firebase/client"; // adjust to your client-side auth import
+import { supabase } from "@/lib/supabase/client"; // adjust to your client-side supabase import
 import { useRouter } from "next/navigation";
-
 
 export default function LogoutButton() {
   const router = useRouter();
 
   const handleLogout = async () => {
-    await signOut(auth);        
+    await supabase.auth.signOut(); // Correctly using supabase client instance
     router.push("/sign-in");
   };
-  
 
   return (
     <button

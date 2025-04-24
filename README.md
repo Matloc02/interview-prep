@@ -41,5 +41,5 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 Make sure your local auth.action.ts and route.ts changes are saved, staged, and committed:
 
 git add .
-git commit -m "fix: add supabaseAdmin server client"
+git commit -m "push to vercel"
 git push origin main

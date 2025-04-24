@@ -1,3 +1,5 @@
+// lib/actions/auth.action.ts
+
 "use server";
 
 import { cookies } from "next/headers";
@@ -10,17 +12,9 @@ const supabase = createClient<Database>(
 );
 
 const SESSION_COOKIE_NAME = "ohlura_session";
-const SESSION_DURATION = 60 * 60 * 24 * 7; // 1 week in seconds
+const SESSION_DURATION = 60 * 60 * 24 * 7;
 
-export async function signUp({
-  uid,
-  name,
-  email,
-}: {
-  uid: string;
-  name: string;
-  email: string;
-}) {
+export async function signUp({ uid, name, email }: { uid: string; name: string; email: string }) {
   try {
     const { data: existingUser } = await supabase
       .from("users")
@@ -35,15 +29,12 @@ export async function signUp({
       };
     }
 
-    const profileImageURL = "/profile.svg";
-    const resumeURL = "";
-
     const { error } = await supabase.from("users").insert({
       id: uid,
       name,
       email,
-      profile_image_url: profileImageURL,
-      resume_url: resumeURL,
+      profile_image_url: "/profile.svg",
+      resume_url: "",
       created_at: new Date().toISOString(),
     });
 
@@ -62,13 +53,7 @@ export async function signUp({
   }
 }
 
-export async function signIn({
-  email,
-  idToken,
-}: {
-  email: string;
-  idToken: string;
-}) {
+export async function signIn({ email, idToken }: { email: string; idToken: string }) {
   try {
     const { data: user, error } = await supabase
       .from("users")
@@ -83,7 +68,7 @@ export async function signIn({
       };
     }
 
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     cookieStore.set(SESSION_COOKIE_NAME, idToken, {
       maxAge: SESSION_DURATION,
       httpOnly: true,
@@ -106,7 +91,7 @@ export async function signIn({
 }
 
 export async function clearSessionCookie() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   cookieStore.set(SESSION_COOKIE_NAME, "", {
     maxAge: 0,
     path: "/",
@@ -114,37 +99,4 @@ export async function clearSessionCookie() {
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
   });
-}
-
-export async function getCurrentUser() {
-  const cookieStore = cookies();
-  const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME)?.value;
-  if (!sessionCookie) return null;
-
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser(sessionCookie);
-
-  if (!user || error) return null;
-
-  const { data: profile } = await supabase
-    .from("users")
-    .select("*")
-    .eq("id", user.id)
-    .single();
-
-  if (!profile) return null;
-
-  return {
-    id: user.id,
-    name: profile.name,
-    email: profile.email,
-    profileImageURL: profile.profile_image_url,
-    resumeURL: profile.resume_url,
-  };
-}
-
-export async function isAuthenticated() {
-  return !!(await getCurrentUser());
 }

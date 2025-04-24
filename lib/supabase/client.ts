@@ -1,8 +1,6 @@
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Database } from "../types/supabase";
+import { createBrowserClient } from "@supabase/ssr";
 
-export async function getCurrentUserClient() {
-  const supabase = createClientComponentClient<Database>();
-  const { data } = await supabase.auth.getUser();
-  return data.user || null;
-}
+export const supabase = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);

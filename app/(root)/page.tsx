@@ -5,8 +5,9 @@ import InterviewCard from "@/components/InterviewCard";
 import { getCurrentUser } from "@/lib/supabase/session";
 import {
   getInterviewsByUserId,
-  getLatestInterviews,
+  getSampleInterviews,
 } from "@/lib/actions/general.action";
+import { sampleInterviews } from "@/lib/interviews/sampleSets";
 
 async function Home() {
   const user = await getCurrentUser();
@@ -15,21 +16,25 @@ async function Home() {
     return (
       <div className="p-6 text-white text-center">
         <h2 className="text-2xl font-semibold">Welcome to OhLura</h2>
-        <p className="mt-2">Please <Link href="/sign-in" className="text-purple-400 underline">sign in</Link> to access your dashboard.</p>
+        <p className="mt-2">
+          Please{" "}
+          <Link href="/sign-in" className="text-purple-400 underline">
+            sign in
+          </Link>{" "}
+          to access your dashboard.
+        </p>
       </div>
     );
   }
 
-  const [userInterviews, allInterviews] = await Promise.all([
+  const [userInterviews, sampleInterviews] = await Promise.all([
     getInterviewsByUserId(user.id),
-    getLatestInterviews({ userId: user.id }),
+    getSampleInterviews(),
   ]);
-
-  const hasPastInterviews = userInterviews && userInterviews.length > 0;
-  const hasUpcomingInterviews = allInterviews && allInterviews.length > 0;
 
   return (
     <>
+      {/* 🎯 Hero CTA */}
       <section className="card-cta">
         <div className="flex flex-col gap-6 max-w-lg">
           <h2>Get Interview-Ready with AI-Powered Practice & Feedback</h2>
@@ -51,11 +56,12 @@ async function Home() {
         />
       </section>
 
+      {/* 👤 Personal Interviews */}
       <section className="flex flex-col gap-6 mt-8">
-        <h2>Your Interviews</h2>
+        <h2>My Practice Interviews</h2>
 
         <div className="interviews-section">
-          {hasPastInterviews ? (
+          {userInterviews?.length ? (
             userInterviews.map((interview) => (
               <InterviewCard
                 key={interview.id}
@@ -68,17 +74,18 @@ async function Home() {
               />
             ))
           ) : (
-            <p>You haven&apos;t taken any interviews yet.</p>
+            <p>You haven&apos;t created any interviews yet.</p>
           )}
         </div>
       </section>
 
+      {/* 🌍 Sample Interviews */}
       <section className="flex flex-col gap-6 mt-8">
-        <h2>Take Interviews</h2>
+        <h2>Sample Interviews</h2>
 
         <div className="interviews-section">
-          {hasUpcomingInterviews ? (
-            allInterviews.map((interview) => (
+          {sampleInterviews?.length ? (
+            sampleInterviews.map((interview) => (
               <InterviewCard
                 key={interview.id}
                 userId={user.id}
@@ -90,10 +97,29 @@ async function Home() {
               />
             ))
           ) : (
-            <p>There are no interviews available.</p>
+            <p>No sample interviews are available right now.</p>
           )}
         </div>
       </section>
+      <section className="flex flex-col gap-6 mt-8">
+  <h2>Sample Practice Interviews</h2>
+
+  <div className="interviews-section">
+    {sampleInterviews?.map((sample) => (
+      <InterviewCard
+        key={sample.id}
+        userId={user.id}
+        interviewId={sample.id}
+        role={sample.title}
+        type="Sample"
+        techstack={[]} // or ["General"]
+        description={sample.description}
+        createdAt="Permanent"
+      />
+    ))}
+  </div>
+</section>
+      
     </>
   );
 }
