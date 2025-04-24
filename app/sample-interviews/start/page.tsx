@@ -1,7 +1,6 @@
-// app/sample-interviews/start/page.tsx
-
 import { redirect } from "next/navigation";
 import { startSampleInterview } from "@/lib/actions/startSampleInterview";
+import { sampleInterviews } from "@/lib/interviews/sampleSets";
 
 export default async function SampleInterviewStartPage({
   params,
@@ -10,14 +9,13 @@ export default async function SampleInterviewStartPage({
 }) {
   const { id } = params;
 
-  const sampleData = {
-    id,
-    title: "Sample Title", // Replace with actual title
-    questions: ["Question 1", "Question 2"], // Replace with actual questions
-    duration: 30, // Replace with actual duration
-  };
+  const interview = sampleInterviews.find((set) => set.id === id);
 
-  const newInterview = await startSampleInterview(sampleData);
+  if (!interview) {
+    return redirect("/sample-interviews");
+  }
+
+  const newInterview = await startSampleInterview(interview);
 
   if (!newInterview?.id) {
     return redirect("/sample-interviews");
