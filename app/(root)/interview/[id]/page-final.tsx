@@ -9,12 +9,13 @@ import {
 } from "@/lib/actions/general.action";
 import { getCurrentUser } from "@/lib/supabase/session";
 import DisplayTechIcons from "@/components/DisplayTechIcons";
+import type { JSX } from "react";
 
 export default async function InterviewDetails({
   params,
 }: {
   params: { id: string };
-}) {
+}): Promise<JSX.Element> {
   const { id } = params;
 
   const user = await getCurrentUser();

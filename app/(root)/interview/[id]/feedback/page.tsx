@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-
+import type { JSX } from "react";
 import {
   getFeedbackByInterviewId,
   getInterviewsByUserId,
@@ -10,11 +10,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/supabase/session";
 
-export default async function FeedbackPage({
+
+export default async function InterviewFeedbackPage({
   params,
 }: {
   params: { id: string };
-}) {
+}): Promise<JSX.Element> {
   const { id } = params;
 
   const user = await getCurrentUser();
