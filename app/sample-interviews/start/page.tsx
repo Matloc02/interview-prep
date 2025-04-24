@@ -5,11 +5,12 @@ import Link from "next/link";
 import { sampleInterviews } from "@/lib/interviews/sampleSets";
 import { Button } from "@/components/ui/button";
 
-export default async function SampleInterviewPage({
+export default function SampleInterviewPage({
   params,
 }: {
   params: { id: string };
 }) {
+
   
 
   const interview = sampleInterviews.find((set) => set.id === params.id);
