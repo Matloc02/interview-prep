@@ -1,42 +1,21 @@
-// app/sample-interviews/[id]/page.tsx
+// app/sample-interviews/start/page.tsx
 
-import { notFound } from "next/navigation";
-import Link from "next/link";
-import { sampleInterviews } from "@/lib/interviews/sampleSets";
-import { Button } from "@/components/ui/button";
+import { redirect } from "next/navigation";
+import { startSampleInterview } from "@/lib/actions/startSampleInterview";
 
-export default function SampleInterviewPage({
+export default async function SampleInterviewStartPage({
   params,
 }: {
   params: { id: string };
 }) {
- 
+  const { id } = params;
 
-  const interview = sampleInterviews.find((set) => set.id === params.id);
+  const newInterview = await startSampleInterview(id);
 
-  if (!interview) return notFound();
+  if (!newInterview?.id) {
+    // Optionally log error
+    return redirect("/sample-interviews");
+  }
 
-  return (
-    <div className="max-w-2xl mx-auto p-6 text-white space-y-6">
-      <h1 className="text-2xl font-bold">{interview.title}</h1>
-      <p className="text-sm text-muted-foreground">Duration: {interview.duration}</p>
-      <p>{interview.description}</p>
-
-      <div className="space-y-4">
-        {interview.questions.map((q, idx) => (
-          <div key={idx} className="border-b pb-2">
-            <p className="text-sm">Q{idx + 1}: {q}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className="pt-6">
-        <Button asChild>
-          <Link href={`/sample-interviews/${interview.id}/start`}>
-            Start This Interview
-          </Link>
-        </Button>
-      </div>
-    </div>
-  );
+  return redirect(`/interview/${newInterview.id}`);
 }
