@@ -10,7 +10,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/supabase/session";
 
-
 type FeedbackPageProps = {
   params: {
     id: string;
@@ -18,7 +17,6 @@ type FeedbackPageProps = {
 };
 
 const Feedback = async ({ params }: FeedbackPageProps) => {
-
   const { id } = params;
   const user = await getCurrentUser();
 
@@ -113,10 +111,7 @@ const Feedback = async ({ params }: FeedbackPageProps) => {
         </Button>
 
         <Button className="btn-primary flex-1">
-          <Link
-            href={`/interview/${id}`}
-            className="flex w-full justify-center"
-          >
+          <Link href={`/interview/${id}`} className="flex w-full justify-center">
             <p className="text-sm font-semibold text-black text-center">
               Retake Interview
             </p>
