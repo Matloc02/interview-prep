@@ -1,8 +1,8 @@
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-  eslint: {
-    // ✅ Allow builds to proceed even if there are ESLint errors
-    ignoreDuringBuilds: true,
+  images: {
+    domains: ["dpmhivjrfzhhikgnqclw.supabase.co"], // ✅ <-- Your Supabase project domain
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
