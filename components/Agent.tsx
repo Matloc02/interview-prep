@@ -1,6 +1,6 @@
 'use client';
 
-import { AgentProps } from '@/types';
+import { AgentProps } from '@/types/index.temp';
 import Image from 'next/image'
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';

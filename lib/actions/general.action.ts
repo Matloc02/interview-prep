@@ -2,7 +2,7 @@
 
 import { createServerSupabaseClient } from "@/lib/supabase/session";
 import { cookies } from "next/headers";
-import { Interview, Feedback, GetFeedbackByInterviewIdParams, GetLatestInterviewsParams } from "@/types";
+import { Interview, Feedback, GetFeedbackByInterviewIdParams, GetLatestInterviewsParams } from "@/types/index.temp";
 
 // Export the createInterview function
 export const createInterview = async (data: {
