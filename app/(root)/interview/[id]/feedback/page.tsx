@@ -1,3 +1,5 @@
+"use client";
+
 import dayjs from "dayjs";
 import Link from "next/link";
 import Image from "next/image";
@@ -10,13 +12,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/supabase/session";
 
-type FeedbackPageProps = {
+type Params = {
   params: {
     id: string;
   };
 };
 
-const Feedback = async ({ params }: FeedbackPageProps) => {
+export default async function Feedback({ params }: Params) {
   const { id } = params;
   const user = await getCurrentUser();
 
@@ -42,7 +44,6 @@ const Feedback = async ({ params }: FeedbackPageProps) => {
 
       <div className="flex flex-row justify-center ">
         <div className="flex flex-row gap-5">
-          {/* Overall Impression */}
           <div className="flex flex-row gap-2 items-center">
             <Image src="/star.svg" width={22} height={22} alt="star" />
             <p>
@@ -54,7 +55,6 @@ const Feedback = async ({ params }: FeedbackPageProps) => {
             </p>
           </div>
 
-          {/* Date */}
           <div className="flex flex-row gap-2">
             <Image src="/calendar.svg" width={22} height={22} alt="calendar" />
             <p>
@@ -70,7 +70,6 @@ const Feedback = async ({ params }: FeedbackPageProps) => {
 
       <p>{feedback?.finalAssessment}</p>
 
-      {/* Interview Breakdown */}
       <div className="flex flex-col gap-4">
         <h2>Breakdown of the Interview:</h2>
         {feedback?.categoryScores?.map((category, index) => (
@@ -120,6 +119,4 @@ const Feedback = async ({ params }: FeedbackPageProps) => {
       </div>
     </section>
   );
-};
-
-export default Feedback;
+}
