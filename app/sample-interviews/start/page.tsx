@@ -1,13 +1,9 @@
 import { redirect } from "next/navigation";
-import { startSampleInterview } from "@/lib/actions/startSampleInterview";
 import { sampleInterviews } from "@/lib/interviews/sampleSets";
+import { startSampleInterview } from "@/lib/actions/startSampleInterview";
 
-export default async function SampleInterviewStartPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const interview = sampleInterviews.find((set) => set.id === params.id);
+export default async function SampleInterviewStartPage({params,}:{params: { id: string };}) {
+  const interview = sampleInterviews.find((i) => i.id === params.id);
 
   if (!interview) {
     return redirect("/sample-interviews");
@@ -15,7 +11,7 @@ export default async function SampleInterviewStartPage({
 
   const newInterview = await startSampleInterview(interview);
 
-  if (!newInterview?.id) {
+  if (!newInterview || !newInterview.id) {
     return redirect("/sample-interviews");
   }
 
