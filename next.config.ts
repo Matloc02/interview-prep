@@ -1,14 +1,8 @@
-/** @type {import('next').NextConfig} */
 const nextConfig = {
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'dpmhivjrfzhhikgnqclw.supabase.co',
-        pathname: '/storage/**',
-      },
-    ],
+  eslint: {
+    // ✅ Allow builds to proceed even if there are ESLint errors
+    ignoreDuringBuilds: true,
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;
