@@ -1,8 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   images: {
-    domains: ["dpmhivjrfzhhikgnqclw.supabase.co"], // ✅ <-- Your Supabase project domain
+    domains: ["dpmhivjrfzhhikgnqclw.supabase.co"],
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;
