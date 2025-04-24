@@ -10,10 +10,16 @@ export default async function SampleInterviewStartPage({
 }) {
   const { id } = params;
 
-  const newInterview = await startSampleInterview(id);
+  const sampleData = {
+    id,
+    title: "Sample Title", // Replace with actual title
+    questions: ["Question 1", "Question 2"], // Replace with actual questions
+    duration: 30, // Replace with actual duration
+  };
+
+  const newInterview = await startSampleInterview(sampleData);
 
   if (!newInterview?.id) {
-    // Optionally log error
     return redirect("/sample-interviews");
   }
 
