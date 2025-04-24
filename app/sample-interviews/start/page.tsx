@@ -5,13 +5,12 @@ import Link from "next/link";
 import { sampleInterviews } from "@/lib/interviews/sampleSets";
 import { Button } from "@/components/ui/button";
 
-interface SampleInterviewPageProps {
-  params: {
-    id: string;
-  };
-}
+export default function SampleInterviewPage({
+  params,
+}: {
+  params: { id: string };
+}) {
 
-export default function SampleInterviewPage({ params }: SampleInterviewPageProps) {
   const interview = sampleInterviews.find((set) => set.id === params.id);
 
   if (!interview) return notFound();
