@@ -10,12 +10,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/supabase/session";
 
-type PageProps<T = {}> = {
-  params: T;
-  searchParams?: Record<string, string | string[] | undefined>;
+
+type FeedbackPageProps = {
+  params: {
+    id: string;
+  };
 };
 
-const Feedback = async ({ params }: PageProps<{ id: string }>) => {
+const Feedback = async ({ params }: FeedbackPageProps) => {
+
   const { id } = params;
   const user = await getCurrentUser();
 
