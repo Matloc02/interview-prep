@@ -33,9 +33,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
           />
           <h2 className="max-w-4xl mx-auto p-1 text-primary-100">OhLura</h2>
           </Link>
-          <h3 className="text-gray-300 mb-2">
-          "From anxious to awesome — interview prep that works".
-          </h3>
+          <p className="text-gray-300 mb-2">"From anxious to awesome — interview prep that works".</p>
 
         {/* Top-right profile + logout */}
         <div className="flex items-center gap-3">
