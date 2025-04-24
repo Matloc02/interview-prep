@@ -10,7 +10,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/supabase/session";
 
-export default async function Feedback({ params }: Record<string, any>) {
+export default async function Feedback({
+  params,
+}: {
+  params: { id: string };
+}) {
   const { id } = params;
 
   const user = await getCurrentUser();
