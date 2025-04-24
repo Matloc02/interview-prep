@@ -65,9 +65,7 @@ export interface AgentProps {
   questions?: string[];
 }
 
-//interface RouteParams {
-//  params: Record<string, string>;
-//  searchParams?: Record<string, string | string[] | undefined>;}
+
 
 
 interface GetFeedbackByInterviewIdParams {

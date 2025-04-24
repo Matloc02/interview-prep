@@ -1,3 +1,4 @@
+// app/sample-interviews/start/page.tsx
 import { redirect } from "next/navigation";
 import { sampleInterviews } from "@/lib/interviews/sampleSets";
 import { startSampleInterview } from "@/lib/actions/startSampleInterview";
