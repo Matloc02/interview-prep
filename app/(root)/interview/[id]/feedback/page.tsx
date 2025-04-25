@@ -1,8 +1,8 @@
+export const dynamic = "force-dynamic"; // Ensures it's treated as dynamic at build time
 import dayjs from "dayjs";
 import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import type { JSX } from "react";
 import {
   getFeedbackByInterviewId,
   getInterviewsByUserId,
@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/supabase/session";
 
-export const dynamic = "force-dynamic"; // Ensures it's treated as dynamic at build time
+
 export default async function FeedbackPage({
   params,
 }: {
