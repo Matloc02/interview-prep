@@ -7,7 +7,7 @@ import {
   getInterviewsByUserId,
   getSampleInterviews,
 } from "@/lib/actions/general.action";
-import { sampleInterviews } from "@/lib/interviews/sampleSets";
+
 
 async function Home() {
   const user = await getCurrentUser();

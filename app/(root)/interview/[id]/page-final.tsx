@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { redirect } from "next/navigation";
-
 import Agent from "@/components/Agent";
 import { getRandomInterviewCover } from "@/lib/utils";
 import {
@@ -11,6 +10,7 @@ import { getCurrentUser } from "@/lib/supabase/session";
 import DisplayTechIcons from "@/components/DisplayTechIcons";
 import type { JSX } from "react";
 
+export const dynamic = "force-dynamic"; // Ensures it's treated as dynamic at build time
 export default async function InterviewDetails({
   params,
 }: {

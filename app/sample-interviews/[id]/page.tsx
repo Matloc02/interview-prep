@@ -3,6 +3,8 @@ import Link from "next/link";
 import { sampleInterviews } from "@/lib/interviews/sampleSets";
 import { Button } from "@/components/ui/button";
 import TakeInterviewButton from "@/components/sample-interviews/TakeInterviewButton";
+
+
 export default function SampleInterviewListPage() {
   return (
     <div className="max-w-4xl mx-auto p-6">

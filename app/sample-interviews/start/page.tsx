@@ -9,7 +9,7 @@ export default async function SampleInterviewStartPage({
   params,
 }: {
   params: { id: string };
-}): Promise<JSX.Element> {
+}) {
   const interview = sampleInterviews.find((i) => i.id === params.id);
 
   if (!interview) {
