@@ -10,12 +10,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/supabase/session";
 
-
-export default async function InterviewFeedbackPage({
+export const dynamic = "force-dynamic"; // Ensures it's treated as dynamic at build time
+export default async function FeedbackPage({
   params,
 }: {
   params: { id: string };
-}): Promise<JSX.Element> {
+}) {
   const { id } = params;
 
   const user = await getCurrentUser();

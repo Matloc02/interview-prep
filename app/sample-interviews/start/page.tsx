@@ -3,7 +3,7 @@ import { sampleInterviews } from "@/lib/interviews/sampleSets";
 import { startSampleInterview } from "@/lib/actions/startSampleInterview";
 import type { JSX } from "react";
 
-
+export const dynamic = "force-dynamic"; // Ensures it's treated as dynamic at build time
 export default async function SampleInterviewStartPage({
   params,
 }: {
